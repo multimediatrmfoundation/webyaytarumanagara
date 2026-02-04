@@ -1,13 +1,53 @@
+'use client';
+
+import { useEffect, useMemo, useState } from "react";
+
 type HeroProps = {
     backgroundImage: string;
+    images?: readonly string[];
+    intervalMs?: number;
     kicker: string;
     title: string;
 };
 
-export function Hero({ backgroundImage, kicker, title }: HeroProps) {
+export function Hero({
+    backgroundImage,
+    images,
+    intervalMs = 5000,
+    kicker,
+    title,
+}: HeroProps) {
+    const slides = useMemo(() => {
+        const list = (images && images.length > 0) ? [...images] : [backgroundImage];
+        return list.filter(Boolean);
+    }, [images, backgroundImage]);
+
+    const [index, setIndex] = useState(0);
+
+    useEffect(() => {
+        if (slides.length <= 1) return;
+
+        const id = window.setInterval(() => {
+            setIndex((prev) => (prev + 1) % slides.length);
+        }, intervalMs);
+
+        return () => window.clearInterval(id);
+    }, [slides.length, intervalMs]);
+
     return (
         <section className="relative h-screen w-full overflow-hidden bg-black">
-            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${backgroundImage})` }} />
+            <div className="absolute inset-0">
+                {slides.map((src, i) => (
+                    <div
+                        key={`${src}-${i}`}
+                        className={[
+                            "absolute inset-0 bg-cover bg-center transition-opacity duration-1000",
+                            i === index ? "opacity-100" : "opacity-0",
+                        ].join(" ")}
+                        style={{ backgroundImage: `url(${src})` }}
+                    />
+                ))}
+            </div>
 
             <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-[#061a2f]/90" />
 

@@ -25,8 +25,10 @@ export const homeDummy = {
   },
 
   hero: {
-    backgroundImage: "/dummy/hero.jpg",
+    images: ["/dummy/hero.jpg", "/dummy/dummy2.jpeg", "/dummy/dummy3.jpeg"] as const,
+    backgroundImage: "/dummy/hero1.jpg",
     kicker: "Tarumanagara Foundation",
     title: "PRIDE IN EXCELLENCE",
+    intervalMs: 3000,
   },
 } as const;
